@@ -1,43 +1,58 @@
-// const heading =  React.createElement("h1",{},"Namaste Everyone");
-    // const root = ReactDOM.createRoot(document.getElementById("root"));
+import React, { useEffect, useState } from "react";
+import ReactDOM, { createRoot } from "react-dom/client";
+import Home from "./Components/Home";
+import { restaurantList } from "./content";
+import RestaurantCards from "./Components/RestaurantCards";
+import Title from "./Components/Title";
 
-    // const heading = React.createElement("h1",{
-    //     id : "head1"
-    // },"Heading 1");
 
-    // const heading2 = React.createElement("h2",{
-    //     id : "head2"
-    // },"Heading 2");
+const HeadingComponent = () => {
+    const [allRestaurants, setAllRestaurants] = useState([]);
+    const [searchText, setSearchText] = useState("");
 
-    // const container  = React.createElement("div",{
-    //     id : "container"
-    // },[heading,heading2]);
+    useEffect(() => {
+      // Simulate fetching the data and updating the state
+      setAllRestaurants(restaurantList);
+    }, []);
+  
+    useEffect(() => {
+      console.log(allRestaurants);
+    }, [allRestaurants]); // Run the log whenever allRestaurants changes
+    
+    const filterData = (searchText, restaurants) => {
+        console.log(searchText,restaurants);
+        filteredData = restaurants?.data?.filter(currRestaurant,()=> {
+            currRestaurant.name.toLowerCase().includes(searchText.toLowerCase());
+        })
+        return filteredData;
+    } 
+
+    return (
+      <>
+        <div className="header">
+          <Title />
+          <Home />
+        </div>
+        <div className="search-container">
+            <input type="text" className="search-input" placeholder="Search..." onChange={(e)=> {
+                setSearchText(e.target.value)
+            }} />
+                <button className="search-button" onClick={()=>{
+                    const filteredData = filterData(searchText,allRestaurants)
+                    setAllRestaurants(filteredData);
+                }}>Search</button>
+        </div>
+        <div className="restaurantsList">
+          {allRestaurants?.map((restaurant) => {
+            return (
+              <RestaurantCards {...restaurant.data} key={restaurant.data.id} />
+            );
+          })}
+        </div>
+      </>
+    );
+  };
   
 
-    const HeadingComponent = ()=>{
-        return (
-            <h1>Heading</h1>
-        );
-    };
-
-    const headingElem = (
-        <>
-        <h1>Namaste Guys this is the element</h1>
-        <h2>This is the heading elem</h2>
-        </>
-    );
-
-    const title = (
-        <div>
-            <HeadingComponent />
-            {headingElem}
-            <h1>Namste React</h1>
-        </div>
-    );
-
-    const root = ReactDOM.createRoot(document.getElementById("root"));
-    root.render(title);
-    
-
-
-    // root.render(heading);
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<HeadingComponent />);
